@@ -16,28 +16,28 @@ Install the library using `npm install formsly-payment-gateway`
 import { createMayaCheckout } from "formsly-payment-gateway";
 
 const response = await createMayaCheckout({
-	publicKey: `pk-NCLk7JeDbX1m22ZRMDYO9bEPowNWT5J4aNIKIbcTy2a`,
-	paymentDetails: {
-		totalAmount: TotalAmount;
-		items: [
-			{
-				name: 'Foo Item',
-				quantity: 1,
-				description: 'Foo item from Store.',
-				totalAmount: {
-					value: 100,
-				},
-			},
-		],
-		redirectUrl: {
-			success: 'http://yourapp.com/payment/success',
-			failure: 'http://yourapp.com/payment/fail',
-			cancel: 'http://yourapp.com/payment/cancel'
-		},
-		requestReferenceNumber: '23c210c4-6193-4896-a829-73a1dfc99bf9';
-		metadata: {};
-	},
-	isSandbox: true // optional, default value is true
+    publicKey: 'pk-NCLk7JeDbX1m22ZRMDYO9bEPowNWT5J4aNIKIbcTy2a',
+    paymentDetails: {
+      totalAmount: 100,
+      items: [
+        {
+          name: 'Foo Item',
+          quantity: 1,
+          description: 'Foo item from store.',
+          totalAmount: {
+             value: 100,
+          },
+        },
+      ],
+      redirectUrl: {
+         success: 'http://yourapp.com/payment/success',
+         failure: 'http://yourapp.com/payment/fail',
+         cancel: 'http://yourapp.com/payment/cancel'
+      },
+      requestReferenceNumber: '23c210c4-6193-4896-a829-73a1dfc99bf9',
+      metadata: {},
+    },
+    isSandbox: true // optional, default true, set to false in production
 });
 ```
 
