@@ -29,23 +29,31 @@ export const createMayaCheckout = async ({publicKey, paymentDetails, isSandbox =
 
         if (response.ok) {
             const responseData = await response.json();
-            return responseData;
+            return {success: true, data: responseData};
+        } else {
+            return {success: false, data: null};
         }
 
     } catch (error) {
         console.log(error);
         console.log('Failed to create maya checkout - error');
+        return {success: false, data: null};
     }
 };
 
 export const createTransactionRecord = async ({transactionData, supabaseUrl, supabaseAnonKey}: CreateTransactionRecord) => {
     try {
         const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
-        const { error } = await supabaseClient.from("transaction_table").insert(transactionData);
+        const { data, error } = await supabaseClient.from("transaction_table")
+            .insert(transactionData)
+            .select("*")
+            .maybeSingle();
         if (error) throw error;
+        return {success: true, data: data};
     } catch (error) {
         console.log(error);
         console.log('Failed to create transaction - error');
+        return {success: false, data: null};
     }
 };
 
@@ -54,13 +62,15 @@ export const updateTransactionRecord = async ({transactionData, supabaseUrl, sup
         const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
         const {data, error} = await supabaseClient.from("transaction_table")
             .update(transactionData)
-            .eq("transaction_id", `${transactionData.transaction_id}`);
+            .eq("transaction_id", `${transactionData.transaction_id}`)
+            .select("*")
+            .maybeSingle();
         if (error) throw error;
-
-        return data;
+        return {success: true, data: data};
     } catch (error) {
         console.log(error);
         console.log('Failed to update transaction - error');
+        return {success: true, data: null};
     }
 };
 
@@ -73,12 +83,12 @@ export const getTransactionList = async ({pagination: {from, to}, status, supaba
             query = query.eq("transaction_status", status)
         }
         query = query.range(from, to);
-
         const {data, error} = await query;
         if (error) throw error;
-        return data;
+        return {success: true, data: data};
     } catch (error) {
         console.log(error);
         console.log('Failed to fetch transaction list - error');
+        return {success: true, data: null};
     }
 };
