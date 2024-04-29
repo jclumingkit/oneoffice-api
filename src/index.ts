@@ -1,4 +1,6 @@
+import { createClient } from "@supabase/supabase-js";
 import { CreateMayaCheckout } from "./types/maya";
+import { CreateTransactionRecord, GetTransactionList, UpdateTransactionRecord } from "./types/transaction";
 
 
 const getMayaApi = (isSandbox: boolean) => {
@@ -8,7 +10,7 @@ const getMayaApi = (isSandbox: boolean) => {
     } else {
         apiUrl = 'https://pg.paymaya.com'
     }
-}
+};
 
 export const createMayaCheckout = async ({publicKey, paymentDetails, isSandbox = true}: CreateMayaCheckout) => {
     try {
@@ -34,4 +36,49 @@ export const createMayaCheckout = async ({publicKey, paymentDetails, isSandbox =
         console.log(error);
         console.log('Failed to create maya checkout - error');
     }
-}
+};
+
+export const createTransactionRecord = async ({transactionData, supabaseUrl, supabaseAnonKey}: CreateTransactionRecord) => {
+    try {
+        const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+        const { error } = await supabaseClient.from("transaction_table").insert(transactionData);
+        if (error) throw error;
+    } catch (error) {
+        console.log(error);
+        console.log('Failed to create transaction - error');
+    }
+};
+
+export const updateTransactionRecord = async ({transactionData, supabaseUrl, supabaseAnonKey}: UpdateTransactionRecord) => {
+    try {
+        const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+        const {data, error} = await supabaseClient.from("transaction_table")
+            .update(transactionData)
+            .eq("transaction_id", `${transactionData.transaction_id}`);
+        if (error) throw error;
+
+        return data;
+    } catch (error) {
+        console.log(error);
+        console.log('Failed to update transaction - error');
+    }
+};
+
+export const getTransactionList = async ({pagination: {from, to}, status, supabaseUrl, supabaseAnonKey}: GetTransactionList) => {
+    try {
+        const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+        let query = supabaseClient.from("transaction_table")
+            .select("*");
+        if (status) {
+            query = query.eq("transaction_status", status)
+        }
+        query = query.range(from, to);
+
+        const {data, error} = await query;
+        if (error) throw error;
+        return data;
+    } catch (error) {
+        console.log(error);
+        console.log('Failed to fetch transaction list - error');
+    }
+};
