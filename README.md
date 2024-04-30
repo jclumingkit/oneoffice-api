@@ -11,33 +11,133 @@ At the moment, only Maya Payment is supported. See their documentation here: htt
 
 Install the library using `npm install formsly-payment-gateway`
 
-**ES6**
+**Use Maya Checkout**
 ```
 import { createMayaCheckout } from "formsly-payment-gateway";
 
 const response = await createMayaCheckout({
-    publicKey: 'pk-NCLk7JeDbX1m22ZRMDYO9bEPowNWT5J4aNIKIbcTy2a',
+    publicKey: "pk-NCLk7JeDbX1m22ZRMDYO9bEPowNWT5J4aNIKIbcTy2a",
     paymentDetails: {
       totalAmount: 100,
       items: [
         {
-          name: 'Foo Item',
+          name: "Foo Item",
           quantity: 1,
-          description: 'Foo item from store.',
+          description: "Foo item from General Store.",
           totalAmount: {
              value: 100,
           },
         },
       ],
       redirectUrl: {
-         success: 'http://yourapp.com/payment/success',
-         failure: 'http://yourapp.com/payment/fail',
-         cancel: 'http://yourapp.com/payment/cancel'
+         success: "http://yourapp.com/payment/success",
+         failure: "http://yourapp.com/payment/fail",
+         cancel: "http://yourapp.com/payment/cancel"
       },
-      requestReferenceNumber: '23c210c4-6193-4896-a829-73a1dfc99bf9',
+      requestReferenceNumber: "23c210c4-6193-4896-a829-73a1dfc99bf9",
       metadata: {},
     },
     isSandbox: true // optional, default true, set to false in production
+});
+```
+
+**The following methods require a Supabase project with a transaction_table. Please see `src/types/transaction` for further reference.**
+
+**Get Transaction List**
+```
+import { getTransactionList } from "formsly-payment-gateway";
+
+const {success, data} = await getTransactionList({
+  pagination: { from: 0, to: 10 },
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
+});
+
+// add status filter
+const {success, data} = await getTransactionList({
+  status: "PENDING",
+  pagination: { from: 0, to: 10 },
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
+});
+```
+
+**Create Transaction**
+```
+import { createTransactionRecord } from "formsly-payment-gateway";
+
+const {success, data} = await createTransactionRecord({
+  transactionData: {
+    transaction_reference_id: "23c210c4-6193-4896-a829-73a1dfc99bf9",
+    transaction_service_name: "Buy n Sell",
+    transaction_payment_channel: "paymaya",
+    transaction_total_amount: 100,
+    transaction_app_source: "General Store",
+  },
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
+});
+```
+
+**Update Transaction**
+```
+import { updateTransactionRecord } from "formsly-payment-gateway";
+
+const {success, data} = await updateTransactionRecord({
+  transactionData: {
+    transaction_id: "1a1a1394-81aa-490f-8a94-4cb64b0f5b86",
+    transaction_reference_id: "23c210c4-6193-4896-a829-73a1dfc99bf9",
+    transaction_service_name: "Buy n Sell",
+    transaction_payment_channel: "paymaya",
+    transaction_total_amount: 100,
+    transaction_app_source: "General Store",
+  },
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
+});
+```
+
+**Use Maya Checkout With Transaction**
+```
+import { createMayaCheckoutWithTransaction } from "formsly-payment-gateway";
+
+const referenceNumber = "23c210c4-6193-4896-a829-73a1dfc99bf9";
+
+const paymentDetails = {
+  totalAmount: 100,
+  items: [
+    {
+      name: "Foo Item",
+      quantity: 1,
+      description: "Foo item from General Store.",
+      totalAmount: {
+          value: 100,
+      },
+    },
+  ],
+  redirectUrl: {
+      success: "http://yourapp.com/payment/success",
+      failure: "http://yourapp.com/payment/fail",
+      cancel: "http://yourapp.com/payment/cancel"
+  },
+  requestReferenceNumber: referenceNumber,
+  metadata: {},
+};
+
+const transactionData = {
+  transaction_reference_id: referenceNumber,
+  transaction_service_name: "Buy n Sell",
+  transaction_payment_channel: "paymaya",
+  transaction_total_amount: 100,
+  transaction_app_source: "General Store",
+}
+
+const response = await createMayaCheckoutWithTransaction({
+  publicKey: "pk-NCLk7JeDbX1m22ZRMDYO9bEPowNWT5J4aNIKIbcTy2a",
+  paymentDetails,
+  transactionData,
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
 });
 ```
 
