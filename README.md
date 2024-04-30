@@ -62,6 +62,17 @@ const {success, data} = await getTransactionList({
 });
 ```
 
+**Get Transaction Record**
+```
+import { getTransactionRecord } from "formsly-payment-gateway";
+
+const {success, data} = await getTransactionRecord({
+  transactionReferenceId: "23c210c4-6193-4896-a829-73a1dfc99bf9",
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
+});
+```
+
 **Create Transaction**
 ```
 import { createTransactionRecord } from "formsly-payment-gateway";

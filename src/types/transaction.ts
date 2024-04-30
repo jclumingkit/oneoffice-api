@@ -25,3 +25,9 @@ export type GetTransactionList = {
     supabaseUrl: string, 
     supabaseAnonKey: string
 }
+
+export type GetTransactionRecord = {
+    transactionReferenceId: string; 
+    supabaseUrl: string;
+    supabaseAnonKey: string
+}

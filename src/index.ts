@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { CreateMayaCheckout } from "./types/maya";
-import { CreateTransactionRecord, GetTransactionList, UpdateTransactionRecord } from "./types/transaction";
+import { CreateTransactionRecord, GetTransactionList, GetTransactionRecord, UpdateTransactionRecord } from "./types/transaction";
 import { handleError } from "./utils/errorHandler";
 
 
@@ -83,6 +83,21 @@ export const getTransactionList = async ({pagination: {from, to}, status, supaba
         }
         query = query.range(from, to);
         const {data, error} = await query;
+        if (error) throw error;
+        return {success: true, data: data};
+    } catch (error) {
+        handleError(error, 'Failed to fetch transaction list - error');
+        return {success: true, data: null};
+    }
+};
+
+export const getTransactionRecord = async ({transactionReferenceId, supabaseUrl, supabaseAnonKey}: GetTransactionRecord) => {
+    try {
+        const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+        const {data, error} = await supabaseClient.from("transaction_table")
+            .select("*")
+            .eq("transaction_reference_id", transactionReferenceId);
+        
         if (error) throw error;
         return {success: true, data: data};
     } catch (error) {
