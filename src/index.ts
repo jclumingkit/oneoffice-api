@@ -114,7 +114,10 @@ export const createMayaCheckoutWithTransaction = async ({publicKey, paymentDetai
         const responseData = await response.json();
         const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
         const { data: newTransaction, error } = await supabaseClient.from("transaction_table")
-            .insert(transactionData)
+            .insert({
+                ...transactionData,
+                transaction_status: "COMPLETE"
+            })
             .select("*")
             .maybeSingle();
         if (error) throw error;
