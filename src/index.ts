@@ -29,12 +29,9 @@ export const createMayaCheckout = async ({publicKey, paymentDetails, isSandbox =
             body: JSON.stringify(paymentDetails),
         });
 
-        if (response.ok) {
-            const responseData = await response.json();
-            return {success: true, data: responseData};
-        } else {
-            return {success: false, data: null};
-        }
+        const responseData = await response.json();
+        
+        return {success: false, data: responseData};
 
     } catch (error) {
         handleError(error, 'Failed to create maya checkout - error');
@@ -106,47 +103,26 @@ export const getTransactionRecord = async ({transactionReferenceId, supabaseUrl,
     }
 };
 
+export const getAppSourceList = async ({supabaseUrl, supabaseAnonKey}: GetTransactionRecord) => {
+    try {
+        const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+        const {data, error} = await supabaseClient.from("app_source_table")
+            .select("*");
+        
+        if (error) throw error;
+        return {success: true, data: data};
+    } catch (error) {
+        handleError(error, 'Failed to fetch transaction list - error');
+        return {success: true, data: null};
+    }
+};
+
 export const createMayaCheckoutWithTransaction = async ({publicKey, paymentDetails, isSandbox = true, transactionData, supabaseUrl, supabaseAnonKey}: (CreateMayaCheckout & CreateTransactionRecord)) => {
     try {
-        const mayaApiUrl = getMayaApi(isSandbox);
-        const response = await fetch(`${mayaApiUrl}/checkout/v1/checkouts`, {
-            method: "POST",
-            headers: {
-            Authorization: `Basic ${Buffer.from(`${publicKey}:`).toString(
-                "base64"
-            )}`,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(paymentDetails),
-        });
-
-        if (!response.ok) {
-            console.log(await response.json());
-            throw new Error('Maya checkout failed - error');
-        }
-
-        const responseData = await response.json();
-        const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
-        const { data: newTransaction, error } = await supabaseClient.from("transaction_table")
-            .insert({
-                ...transactionData,
-                transaction_status: "COMPLETE"
-            })
-            .select("*")
-            .maybeSingle();
-        if (error) throw error;
-
-        return {
-            success: true, 
-            data: {
-                maya: responseData,
-                transaction: newTransaction
-            },
-        };
-
+        const mayaCheckout = await createMayaCheckout({publicKey, paymentDetails, isSandbox});
+        await createTransactionRecord({transactionData, supabaseUrl, supabaseAnonKey});
+        window.location.href = mayaCheckout.data.redirectUrl
     } catch (error) {
         handleError(error, 'Failed to create maya checkout with transaction - error');
-        return {success: false, data: null};
     }
 };

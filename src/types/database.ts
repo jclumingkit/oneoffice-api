@@ -9,6 +9,24 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      app_source_table: {
+        Row: {
+          app_source_date_created: string
+          app_source_id: string
+          app_source_name: string
+        }
+        Insert: {
+          app_source_date_created?: string
+          app_source_id?: string
+          app_source_name: string
+        }
+        Update: {
+          app_source_date_created?: string
+          app_source_id?: string
+          app_source_name?: string
+        }
+        Relationships: []
+      }
       transaction_table: {
         Row: {
           transaction_app_source: string
@@ -40,7 +58,15 @@ export type Database = {
           transaction_status?: string
           transaction_total_amount?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "transaction_table_transaction_app_source_fkey"
+            columns: ["transaction_app_source"]
+            isOneToOne: false
+            referencedRelation: "app_source_table"
+            referencedColumns: ["app_source_id"]
+          },
+        ]
       }
     }
     Views: {
