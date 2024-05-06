@@ -83,7 +83,7 @@ const {success, data} = await createTransactionRecord({
     transaction_service_name: "Buy n Sell",
     transaction_payment_channel: "paymaya",
     transaction_total_amount: 100,
-    transaction_app_source: "General Store",
+    transaction_app_source: "ba9e641e-d7fe-4d61-b9ee-85c919f457ca", // app_source_id
   },
   supabaseUrl: "<yoursupabaseurl>",
   supabaseAnonKey: "<yoursupabaseanonkey>",
@@ -101,7 +101,7 @@ const {success, data} = await updateTransactionRecord({
     transaction_service_name: "Buy n Sell",
     transaction_payment_channel: "paymaya",
     transaction_total_amount: 100,
-    transaction_app_source: "General Store",
+    transaction_app_source: "ba9e641e-d7fe-4d61-b9ee-85c919f457ca", // app_source_id
   },
   supabaseUrl: "<yoursupabaseurl>",
   supabaseAnonKey: "<yoursupabaseanonkey>",
@@ -140,13 +140,21 @@ const transactionData = {
   transaction_service_name: "Buy n Sell",
   transaction_payment_channel: "paymaya",
   transaction_total_amount: 100,
-  transaction_app_source: "General Store",
+  transaction_app_source: "ba9e641e-d7fe-4d61-b9ee-85c919f457ca", // app_source_id
 }
 
 const response = await createMayaCheckoutWithTransaction({
   publicKey: "pk-NCLk7JeDbX1m22ZRMDYO9bEPowNWT5J4aNIKIbcTy2a",
   paymentDetails,
   transactionData,
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
+});
+
+**Fetch All App Source**
+import { getAppSourceList } from "formsly-payment-gateway";
+
+const {success, data} = await getAppSourceList({
   supabaseUrl: "<yoursupabaseurl>",
   supabaseAnonKey: "<yoursupabaseanonkey>",
 });
