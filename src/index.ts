@@ -80,16 +80,16 @@ export const getTransactionList = async ({pagination: {from, to}, filter, orderB
             const {status, appSource, appSourceUserId, serviceName} = filter;
 
             if (status) {
-                query = query.eq("transaction_status", filter.status)
+                query = query.eq("transaction_status", status)
             } 
             if (appSource) {
-                query = query.eq("transaction_app_source", filter.appSource)
+                query = query.eq("transaction_app_source", appSource)
             }
             if (appSourceUserId) {
-                query = query.eq("transaction_app_source_user_id", filter.appSourceUserId)
+                query = query.eq("transaction_app_source_user_id", appSourceUserId)
             }
             if (serviceName) {
-                query = query.eq("transaction_service_name", filter?.serviceName)
+                query = query.eq("transaction_service_name", serviceName)
             }
         }
 
