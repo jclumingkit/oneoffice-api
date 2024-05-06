@@ -150,8 +150,10 @@ const response = await createMayaCheckoutWithTransaction({
   supabaseUrl: "<yoursupabaseurl>",
   supabaseAnonKey: "<yoursupabaseanonkey>",
 });
+```
 
 **Fetch All App Source**
+```
 import { getAppSourceList } from "formsly-payment-gateway";
 
 const {success, data} = await getAppSourceList({
