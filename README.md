@@ -53,12 +53,31 @@ const {success, data} = await getTransactionList({
   supabaseAnonKey: "<yoursupabaseanonkey>",
 });
 
-// add status filter
-const {success, data} = await getTransactionList({
-  status: "PENDING",
-  pagination: { from: 0, to: 10 },
-  supabaseUrl: "<yoursupabaseurl>",
-  supabaseAnonKey: "<yoursupabaseanonkey>",
+// add filters
+const { success, data, count } = await getTransactionList({
+  pagination: {
+    from: 0,
+    to: 10,
+  },
+  filter: {
+    appSourceUserId: "f69933b2-fe12-4fc4-bb56-63f370e40a45",
+    appSource: "ba9e641e-d7fe-4d61-b9ee-85c919f457ca",
+    status: "COMPLETED_PAYMENT",
+    serviceName: "mailroom",
+  },
+  supabaseUrl: `${process.env.NEXT_PUBLIC_TRANSACTION_SUPABASE_URL}`,
+  supabaseAnonKey: `${process.env.NEXT_PUBLIC_TRANSACTION_SUPABASE_ANON_KEY}`,
+});
+
+// order by date ascending
+const { success, data, count } = await getTransactionList({
+  pagination: {
+    from: 0,
+    to: 10,
+  },
+  orderByDateAscending: true,
+  supabaseUrl: `${process.env.NEXT_PUBLIC_TRANSACTION_SUPABASE_URL}`,
+  supabaseAnonKey: `${process.env.NEXT_PUBLIC_TRANSACTION_SUPABASE_ANON_KEY}`,
 });
 ```
 

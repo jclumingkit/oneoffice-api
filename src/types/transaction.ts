@@ -7,13 +7,13 @@ export type TransactionTableUpdate = Database["public"]["Tables"]["transaction_t
 export type CreateTransactionRecord = {
     transactionData: TransactionTableInsert; 
     supabaseUrl: string;
-    supabaseAnonKey: string
+    supabaseAnonKey: string;
 }
 
 export type UpdateTransactionRecord = {
     transactionData: TransactionTableUpdate; 
     supabaseUrl: string;
-    supabaseAnonKey: string
+    supabaseAnonKey: string;
 }
 
 export type GetTransactionList = {
@@ -21,13 +21,19 @@ export type GetTransactionList = {
         from: number;
         to: number;
     },
-    status?: string;
-    supabaseUrl: string, 
-    supabaseAnonKey: string
+    filter?: {
+        status?: string;
+        appSourceUserId?: string;
+        appSource?: string;
+        serviceName?: string;
+    },
+    orderByDateAscending?: boolean;
+    supabaseUrl: string; 
+    supabaseAnonKey: string;
 }
 
 export type GetTransactionRecord = {
     transactionReferenceId: string; 
     supabaseUrl: string;
-    supabaseAnonKey: string
+    supabaseAnonKey: string;
 }

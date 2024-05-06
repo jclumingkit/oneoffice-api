@@ -70,21 +70,37 @@ export const updateTransactionRecord = async ({transactionData, supabaseUrl, sup
     }
 };
 
-export const getTransactionList = async ({pagination: {from, to}, status, supabaseUrl, supabaseAnonKey}: GetTransactionList) => {
+export const getTransactionList = async ({pagination: {from, to}, filter, orderByDateAscending = false, supabaseUrl, supabaseAnonKey}: GetTransactionList) => {
     try {
         const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
         let query = supabaseClient.from("transaction_table")
-            .select("*");
-        if (status) {
-            query = query.eq("transaction_status", status)
+            .select("*", {count: "exact"});
+
+        if (filter) {
+            const {status, appSource, appSourceUserId, serviceName} = filter;
+
+            if (status) {
+                query = query.eq("transaction_status", filter.status)
+            } 
+            if (appSource) {
+                query = query.eq("transaction_app_source", filter.appSource)
+            }
+            if (appSourceUserId) {
+                query = query.eq("transaction_app_source_user_id", filter.appSourceUserId)
+            }
+            if (serviceName) {
+                query = query.eq("transaction_service_name", filter?.serviceName)
+            }
         }
+
         query = query.range(from, to);
-        const {data, error} = await query;
+        query = query.order('transaction_date', {ascending: orderByDateAscending})
+        const {data, count, error} = await query;
         if (error) throw error;
-        return {success: true, data: data};
+        return {success: true, data: data, count: Number(count)};
     } catch (error) {
         handleError(error, 'Failed to fetch transaction list - error');
-        return {success: false, data: null};
+        return {success: false, data: null, count: null};
     }
 };
 
