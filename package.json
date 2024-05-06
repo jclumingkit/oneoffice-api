@@ -1,6 +1,6 @@
 {
   "name": "oneoffice-payment-gateway",
-  "version": "1.0.11",
+  "version": "1.0.0",
   "description": "Standardized OneOffice payment gateway.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
