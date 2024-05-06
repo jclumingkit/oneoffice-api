@@ -3,7 +3,7 @@
 The standardized Formsly payment gateway.
 
 
-# Supported Payment Channels
+## Supported Payment Channels
 
 At the moment, only Maya Payment is supported. See their documentation here: https://developers.maya.ph/
 
@@ -83,6 +83,7 @@ const {success, data} = await createTransactionRecord({
     transaction_service_name: "Buy n Sell",
     transaction_payment_channel: "paymaya",
     transaction_total_amount: 100,
+    transaction_app_source_user_id: "88274006-487f-49ba-b82e-99a2b2387d19",
     transaction_app_source: "ba9e641e-d7fe-4d61-b9ee-85c919f457ca", // app_source_id
   },
   supabaseUrl: "<yoursupabaseurl>",
@@ -101,6 +102,7 @@ const {success, data} = await updateTransactionRecord({
     transaction_service_name: "Buy n Sell",
     transaction_payment_channel: "paymaya",
     transaction_total_amount: 100,
+    transaction_app_source_user_id: "88274006-487f-49ba-b82e-99a2b2387d19",
     transaction_app_source: "ba9e641e-d7fe-4d61-b9ee-85c919f457ca", // app_source_id
   },
   supabaseUrl: "<yoursupabaseurl>",
@@ -140,6 +142,7 @@ const transactionData = {
   transaction_service_name: "Buy n Sell",
   transaction_payment_channel: "paymaya",
   transaction_total_amount: 100,
+  transaction_app_source_user_id: "88274006-487f-49ba-b82e-99a2b2387d19",
   transaction_app_source: "ba9e641e-d7fe-4d61-b9ee-85c919f457ca", // app_source_id
 }
 

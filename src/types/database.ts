@@ -30,6 +30,7 @@ export type Database = {
       transaction_table: {
         Row: {
           transaction_app_source: string
+          transaction_app_source_user_id: string
           transaction_date: string
           transaction_id: string
           transaction_payment_channel: string | null
@@ -40,6 +41,7 @@ export type Database = {
         }
         Insert: {
           transaction_app_source: string
+          transaction_app_source_user_id: string
           transaction_date?: string
           transaction_id?: string
           transaction_payment_channel?: string | null
@@ -50,6 +52,7 @@ export type Database = {
         }
         Update: {
           transaction_app_source?: string
+          transaction_app_source_user_id?: string
           transaction_date?: string
           transaction_id?: string
           transaction_payment_channel?: string | null
