@@ -1,21 +1,21 @@
-# formsly-payment-gateway
+# oneoffice-payment-gateway
 
-The standardized Formsly payment gateway.
+The standardized OneOffice payment gateway.
 
 
-## Supported Payment Channels
+### Supported Payment Channels
 
 At the moment, only Maya Payment is supported. See their documentation here: https://developers.maya.ph/
 
-## Installation and Usage
+### Installation and Usage
 
-Install the library using `npm install formsly-payment-gateway`
+Install the library using `npm install oneoffice-payment-gateway`
 
 **Use Maya Checkout**
 ```
-import { createMayaCheckout } from "formsly-payment-gateway";
+import { createMayaCheckout } from "oneoffice-payment-gateway";
 
-const response = await createMayaCheckout({
+const {data, error} = await createMayaCheckout({
     publicKey: "pk-NCLk7JeDbX1m22ZRMDYO9bEPowNWT5J4aNIKIbcTy2a",
     paymentDetails: {
       totalAmount: 100,
@@ -45,16 +45,16 @@ const response = await createMayaCheckout({
 
 **Get Transaction List**
 ```
-import { getTransactionList } from "formsly-payment-gateway";
+import { getTransactionList } from "oneoffice-payment-gateway";
 
-const {success, data} = await getTransactionList({
+const {data, count, error} = await getTransactionList({
   pagination: { from: 0, to: 10 },
   supabaseUrl: "<yoursupabaseurl>",
   supabaseAnonKey: "<yoursupabaseanonkey>",
 });
 
 // add filters
-const { success, data, count } = await getTransactionList({
+const {data, count, error} = await getTransactionList({
   pagination: {
     from: 0,
     to: 10,
@@ -70,7 +70,7 @@ const { success, data, count } = await getTransactionList({
 });
 
 // order by date ascending
-const { success, data, count } = await getTransactionList({
+const {data, count, error} = await getTransactionList({
   pagination: {
     from: 0,
     to: 10,
@@ -83,9 +83,9 @@ const { success, data, count } = await getTransactionList({
 
 **Get Transaction Record**
 ```
-import { getTransactionRecord } from "formsly-payment-gateway";
+import { getTransactionRecord } from "oneoffice-payment-gateway";
 
-const {success, data} = await getTransactionRecord({
+const {data, error} = await getTransactionRecord({
   transactionReferenceId: "23c210c4-6193-4896-a829-73a1dfc99bf9",
   supabaseUrl: "<yoursupabaseurl>",
   supabaseAnonKey: "<yoursupabaseanonkey>",
@@ -94,9 +94,9 @@ const {success, data} = await getTransactionRecord({
 
 **Create Transaction**
 ```
-import { createTransactionRecord } from "formsly-payment-gateway";
+import { createTransactionRecord } from "oneoffice-payment-gateway";
 
-const {success, data} = await createTransactionRecord({
+const {data, error} = await createTransactionRecord({
   transactionData: {
     transaction_reference_id: "23c210c4-6193-4896-a829-73a1dfc99bf9",
     transaction_service_name: "Buy n Sell",
@@ -112,9 +112,9 @@ const {success, data} = await createTransactionRecord({
 
 **Update Transaction**
 ```
-import { updateTransactionRecord } from "formsly-payment-gateway";
+import { updateTransactionRecord } from "oneoffice-payment-gateway";
 
-const {success, data} = await updateTransactionRecord({
+const {data, error} = await updateTransactionRecord({
   transactionData: {
     transaction_id: "1a1a1394-81aa-490f-8a94-4cb64b0f5b86",
     transaction_reference_id: "23c210c4-6193-4896-a829-73a1dfc99bf9",
@@ -131,7 +131,7 @@ const {success, data} = await updateTransactionRecord({
 
 **Use Maya Checkout With Transaction**
 ```
-import { createMayaCheckoutWithTransaction } from "formsly-payment-gateway";
+import { createMayaCheckoutWithTransaction } from "oneoffice-payment-gateway";
 
 const referenceNumber = "23c210c4-6193-4896-a829-73a1dfc99bf9";
 
@@ -165,7 +165,9 @@ const transactionData = {
   transaction_app_source: "ba9e641e-d7fe-4d61-b9ee-85c919f457ca", // app_source_id
 }
 
-const response = await createMayaCheckoutWithTransaction({
+// will create maya checkout and transaction record
+// then redirect user to maya checkout page
+await createMayaCheckoutWithTransaction({
   publicKey: "pk-NCLk7JeDbX1m22ZRMDYO9bEPowNWT5J4aNIKIbcTy2a",
   paymentDetails,
   transactionData,
@@ -176,9 +178,9 @@ const response = await createMayaCheckoutWithTransaction({
 
 **Fetch All App Source**
 ```
-import { getAppSourceList } from "formsly-payment-gateway";
+import { getAppSourceList } from "oneoffice-payment-gateway";
 
-const {success, data} = await getAppSourceList({
+const {data, error} = await getAppSourceList({
   supabaseUrl: "<yoursupabaseurl>",
   supabaseAnonKey: "<yoursupabaseanonkey>",
 });

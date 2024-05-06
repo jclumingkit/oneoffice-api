@@ -31,11 +31,11 @@ export const createMayaCheckout = async ({publicKey, paymentDetails, isSandbox =
 
         const responseData = await response.json();
         
-        return {success: false, data: responseData};
+        return {data: responseData, error: null};
 
     } catch (error) {
         handleError(error, 'Failed to create maya checkout - error');
-        return {success: false, data: null};
+        return {data: null, error: error};
     }
 };
 
@@ -47,10 +47,10 @@ export const createTransactionRecord = async ({transactionData, supabaseUrl, sup
             .select("*")
             .maybeSingle();
         if (error) throw error;
-        return {success: true, data: data};
+        return {data: data, error: null};
     } catch (error) {
         handleError(error, 'Failed to create transaction - error');
-        return {success: false, data: null};
+        return {data: null, error: error}
     }
 };
 
@@ -63,10 +63,10 @@ export const updateTransactionRecord = async ({transactionData, supabaseUrl, sup
             .select("*")
             .maybeSingle();
         if (error) throw error;
-        return {success: true, data: data};
+        return {data: data, error: null}
     } catch (error) {
         handleError(error, 'Failed to update transaction - error');
-        return {success: false, data: null};
+        return {data: null, error: error};
     }
 };
 
@@ -94,13 +94,13 @@ export const getTransactionList = async ({pagination: {from, to}, filter, orderB
         }
 
         query = query.range(from, to);
-        query = query.order('transaction_date', {ascending: orderByDateAscending})
+        query = query.order('transaction_date', {ascending: orderByDateAscending});
         const {data, count, error} = await query;
         if (error) throw error;
-        return {success: true, data: data, count: Number(count)};
+        return {data: data, count: Number(count), error: null};
     } catch (error) {
         handleError(error, 'Failed to fetch transaction list - error');
-        return {success: false, data: null, count: null};
+        return {data: null, count: null, error: error};
     }
 };
 
@@ -112,10 +112,10 @@ export const getTransactionRecord = async ({transactionReferenceId, supabaseUrl,
             .eq("transaction_reference_id", transactionReferenceId);
         
         if (error) throw error;
-        return {success: true, data: data};
+        return {data: data, error: null};
     } catch (error) {
         handleError(error, 'Failed to fetch transaction list - error');
-        return {success: false, data: null};
+        return {data: null, error: error};
     }
 };
 
@@ -126,10 +126,10 @@ export const getAppSourceList = async ({supabaseUrl, supabaseAnonKey}: GetTransa
             .select("*");
         
         if (error) throw error;
-        return {success: true, data: data};
+        return {data: data, error: null};
     } catch (error) {
         handleError(error, 'Failed to fetch transaction list - error');
-        return {success: false, data: null};
+        return {data: null, error: error};
     }
 };
 
@@ -137,8 +137,9 @@ export const createMayaCheckoutWithTransaction = async ({publicKey, paymentDetai
     try {
         const mayaCheckout = await createMayaCheckout({publicKey, paymentDetails, isSandbox});
         await createTransactionRecord({transactionData, supabaseUrl, supabaseAnonKey});
-        window.location.href = mayaCheckout.data.redirectUrl
+        window.location.href = mayaCheckout.data.redirectUrl;
     } catch (error) {
         handleError(error, 'Failed to create maya checkout with transaction - error');
+        return {data: null, error: error}
     }
 };
