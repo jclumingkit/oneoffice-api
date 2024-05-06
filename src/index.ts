@@ -66,7 +66,7 @@ export const updateTransactionRecord = async ({transactionData, supabaseUrl, sup
         return {success: true, data: data};
     } catch (error) {
         handleError(error, 'Failed to update transaction - error');
-        return {success: true, data: null};
+        return {success: false, data: null};
     }
 };
 
@@ -84,7 +84,7 @@ export const getTransactionList = async ({pagination: {from, to}, status, supaba
         return {success: true, data: data};
     } catch (error) {
         handleError(error, 'Failed to fetch transaction list - error');
-        return {success: true, data: null};
+        return {success: false, data: null};
     }
 };
 
@@ -99,7 +99,7 @@ export const getTransactionRecord = async ({transactionReferenceId, supabaseUrl,
         return {success: true, data: data};
     } catch (error) {
         handleError(error, 'Failed to fetch transaction list - error');
-        return {success: true, data: null};
+        return {success: false, data: null};
     }
 };
 
@@ -113,7 +113,7 @@ export const getAppSourceList = async ({supabaseUrl, supabaseAnonKey}: GetTransa
         return {success: true, data: data};
     } catch (error) {
         handleError(error, 'Failed to fetch transaction list - error');
-        return {success: true, data: null};
+        return {success: false, data: null};
     }
 };
 
