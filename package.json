@@ -1,6 +1,6 @@
 {
   "name": "formsly-payment-gateway",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Standardized Formsly payment gateway.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
