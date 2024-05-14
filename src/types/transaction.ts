@@ -1,8 +1,8 @@
 import { Database } from "./database"
 
-export type TransactionTableRow = Database["public"]["Tables"]["transaction_table"]["Row"];
-export type TransactionTableInsert = Database["public"]["Tables"]["transaction_table"]["Insert"];
-export type TransactionTableUpdate = Database["public"]["Tables"]["transaction_table"]["Update"];
+export type TransactionTableRow = Database["transaction_schema"]["Tables"]["transaction_table"]["Row"];
+export type TransactionTableInsert = Database["transaction_schema"]["Tables"]["transaction_table"]["Insert"];
+export type TransactionTableUpdate = Database["transaction_schema"]["Tables"]["transaction_table"]["Update"];
 
 export type CreateTransactionRecord = {
     transactionData: TransactionTableInsert; 
