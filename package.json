@@ -25,7 +25,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.42.7"
+    "@supabase/supabase-js": "^2.43.1"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",
