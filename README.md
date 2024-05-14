@@ -1,6 +1,6 @@
 # oneoffice-payment-gateway
 
-The standardized OneOffice payment gateway.
+The standardized OneOffice API.
 
 
 ### Supported Payment Channels
