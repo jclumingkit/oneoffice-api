@@ -1,4 +1,4 @@
-# oneoffice-payment-gateway
+# oneoffice-api
 
 The standardized OneOffice API.
 
@@ -9,11 +9,11 @@ At the moment, only Maya Payment is supported. See their documentation here: htt
 
 ### Installation and Usage
 
-Install the library using `npm install oneoffice-payment-gateway`
+Install the library using `npm install oneoffice-api` 
 
 **Use Maya Checkout**
 ```
-import { createMayaCheckout } from "oneoffice-payment-gateway";
+import { createMayaCheckout } from "oneoffice-api";
 
 const {data, error} = await createMayaCheckout({
     publicKey: "pk-NCLk7JeDbX1m22ZRMDYO9bEPowNWT5J4aNIKIbcTy2a",
@@ -45,7 +45,7 @@ const {data, error} = await createMayaCheckout({
 
 **Get Transaction List**
 ```
-import { getTransactionList } from "oneoffice-payment-gateway";
+import { getTransactionList } from "oneoffice-api";
 
 const {data, count, error} = await getTransactionList({
   pagination: { from: 0, to: 10 },
@@ -83,7 +83,7 @@ const {data, count, error} = await getTransactionList({
 
 **Get Transaction Record**
 ```
-import { getTransactionRecord } from "oneoffice-payment-gateway";
+import { getTransactionRecord } from "oneoffice-api";
 
 const {data, error} = await getTransactionRecord({
   transactionReferenceId: "23c210c4-6193-4896-a829-73a1dfc99bf9",
@@ -94,7 +94,7 @@ const {data, error} = await getTransactionRecord({
 
 **Create Transaction**
 ```
-import { createTransactionRecord } from "oneoffice-payment-gateway";
+import { createTransactionRecord } from "oneoffice-api";
 
 const {data, error} = await createTransactionRecord({
   transactionData: {
@@ -112,7 +112,7 @@ const {data, error} = await createTransactionRecord({
 
 **Update Transaction**
 ```
-import { updateTransactionRecord } from "oneoffice-payment-gateway";
+import { updateTransactionRecord } from "oneoffice-api";
 
 const {data, error} = await updateTransactionRecord({
   transactionData: {
@@ -131,7 +131,7 @@ const {data, error} = await updateTransactionRecord({
 
 **Use Maya Checkout With Transaction**
 ```
-import { createMayaCheckoutWithTransaction } from "oneoffice-payment-gateway";
+import { createMayaCheckoutWithTransaction } from "oneoffice-api";
 
 const referenceNumber = "23c210c4-6193-4896-a829-73a1dfc99bf9";
 
@@ -178,7 +178,7 @@ await createMayaCheckoutWithTransaction({
 
 **Fetch All App Source**
 ```
-import { getAppSourceList } from "oneoffice-payment-gateway";
+import { getAppSourceList } from "oneoffice-api";
 
 const {data, error} = await getAppSourceList({
   supabaseUrl: "<yoursupabaseurl>",
