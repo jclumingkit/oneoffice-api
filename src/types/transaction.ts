@@ -9,17 +9,17 @@ export type TransactionTableUpdate =
   Database["transaction_schema"]["Tables"]["transaction_table"]["Update"];
 
 export type CreateTransactionRecord = {
-  supabaseClient: SupabaseClient;
+  supabaseClient: SupabaseClient<Database["transaction_schema"]>;
   transactionData: TransactionTableInsert;
 };
 
 export type UpdateTransactionRecord = {
-  supabaseClient: SupabaseClient;
+  supabaseClient: SupabaseClient<Database["transaction_schema"]>;
   transactionData: TransactionTableUpdate;
 };
 
 export type GetTransactionList = {
-  supabaseClient: SupabaseClient;
+  supabaseClient: SupabaseClient<Database["transaction_schema"]>;
   pagination: {
     from: number;
     to: number;
@@ -34,6 +34,6 @@ export type GetTransactionList = {
 };
 
 export type GetTransactionRecord = {
-  supabaseClient: SupabaseClient;
+  supabaseClient: SupabaseClient<Database["transaction_schema"]>;
   transactionReferenceId: string;
 };
