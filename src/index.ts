@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { SupabaseClient, createClient } from "@supabase/supabase-js";
 import { CreateMayaCheckout } from "./types/maya";
 import {
   CreateTransactionRecord,
@@ -47,14 +47,10 @@ export const createMayaCheckout = async ({
 };
 
 export const createTransactionRecord = async ({
+  supabaseClient,
   transactionData,
-  supabaseUrl,
-  supabaseAnonKey,
 }: CreateTransactionRecord) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-      db: { schema: "transaction_schema" },
-    });
     const { data, error } = await supabaseClient
       .from("transaction_table")
       .insert(transactionData)
@@ -69,14 +65,10 @@ export const createTransactionRecord = async ({
 };
 
 export const updateTransactionRecord = async ({
+  supabaseClient,
   transactionData,
-  supabaseUrl,
-  supabaseAnonKey,
 }: UpdateTransactionRecord) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-      db: { schema: "transaction_schema" },
-    });
     const { data, error } = await supabaseClient
       .from("transaction_table")
       .update(transactionData)
@@ -92,16 +84,12 @@ export const updateTransactionRecord = async ({
 };
 
 export const getTransactionList = async ({
+  supabaseClient,
   pagination: { from, to },
   filter,
   orderByDateAscending = false,
-  supabaseUrl,
-  supabaseAnonKey,
 }: GetTransactionList) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-      db: { schema: "transaction_schema" },
-    });
     let query = supabaseClient
       .from("transaction_table")
       .select("*", { count: "exact" });
@@ -137,12 +125,10 @@ export const getTransactionList = async ({
 };
 
 export const getTransactionRecord = async ({
+  supabaseClient,
   transactionReferenceId,
-  supabaseUrl,
-  supabaseAnonKey,
 }: GetTransactionRecord) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
     const { data, error } = await supabaseClient
       .from("transaction_table")
       .select("*")
@@ -157,15 +143,12 @@ export const getTransactionRecord = async ({
 };
 
 export const getAppSourceList = async ({
-  supabaseUrl,
-  supabaseAnonKey,
+  supabaseClient,
 }: GetTransactionRecord) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
     const { data, error } = await supabaseClient
       .from("app_source_table")
       .select("*");
-
     if (error) throw error;
     return { data: data, error: null };
   } catch (error) {
@@ -175,12 +158,11 @@ export const getAppSourceList = async ({
 };
 
 export const createMayaCheckoutWithTransaction = async ({
+  supabaseClient,
   publicKey,
   paymentDetails,
   isSandbox = true,
   transactionData,
-  supabaseUrl,
-  supabaseAnonKey,
 }: CreateMayaCheckout & CreateTransactionRecord) => {
   try {
     const mayaCheckout = await createMayaCheckout({
@@ -189,9 +171,8 @@ export const createMayaCheckoutWithTransaction = async ({
       isSandbox,
     });
     await createTransactionRecord({
+      supabaseClient,
       transactionData,
-      supabaseUrl,
-      supabaseAnonKey,
     });
     window.location.href = mayaCheckout.data.redirectUrl;
   } catch (error) {
@@ -204,16 +185,11 @@ export const createMayaCheckoutWithTransaction = async ({
 };
 
 export const getRegion = async ({
-  supabaseUrl,
-  supabaseAnonKey,
+  supabaseClient,
 }: {
-  supabaseUrl: string;
-  supabaseAnonKey: string;
+  supabaseClient: SupabaseClient;
 }) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-      db: { schema: "address_schema" },
-    });
     const { data, error } = await supabaseClient
       .from("region_table")
       .select("region_id, region")
@@ -231,18 +207,13 @@ export const getRegion = async ({
 };
 
 export const getProvince = async ({
-  supabaseUrl,
-  supabaseAnonKey,
+  supabaseClient,
   regionId,
 }: {
-  supabaseUrl: string;
-  supabaseAnonKey: string;
+  supabaseClient: SupabaseClient;
   regionId: string;
 }) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-      db: { schema: "address_schema" },
-    });
     const { data, error } = await supabaseClient
       .from("province_table")
       .select("province_id, province")
@@ -261,18 +232,13 @@ export const getProvince = async ({
 };
 
 export const getCity = async ({
-  supabaseUrl,
-  supabaseAnonKey,
+  supabaseClient,
   provinceId,
 }: {
-  supabaseUrl: string;
-  supabaseAnonKey: string;
+  supabaseClient: SupabaseClient;
   provinceId: string;
 }) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-      db: { schema: "address_schema" },
-    });
     const { data, error } = await supabaseClient
       .from("city_table")
       .select("city_id, city")
@@ -291,18 +257,13 @@ export const getCity = async ({
 };
 
 export const getBarangay = async ({
-  supabaseUrl,
-  supabaseAnonKey,
+  supabaseClient,
   cityId,
 }: {
-  supabaseUrl: string;
-  supabaseAnonKey: string;
+  supabaseClient: SupabaseClient;
   cityId: string;
 }) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-      db: { schema: "address_schema" },
-    });
     const { data, error } = await supabaseClient
       .from("barangay_table")
       .select("barangay_id, barangay, barangay_zip_code")
