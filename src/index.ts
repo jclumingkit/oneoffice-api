@@ -212,7 +212,10 @@ export const getRegion = async ({
       .eq("region_is_disabled", false)
       .eq("region_is_available", true);
     if (error) throw error;
-    return data;
+    return {
+      data: data,
+      error: null,
+    };
   } catch (error) {
     handleError(error, "Failed to fetch region - error");
     return { data: null, error: error };
@@ -237,7 +240,10 @@ export const getProvince = async ({
       .eq("province_is_available", true)
       .eq("province_region_id", regionId);
     if (error) throw error;
-    return data;
+    return {
+      data: data,
+      error: null,
+    };
   } catch (error) {
     handleError(error, "Failed to fetch province - error");
     return { data: null, error: error };
@@ -262,7 +268,10 @@ export const getCity = async ({
       .eq("city_is_available", true)
       .eq("city_province_id", provinceId);
     if (error) throw error;
-    return data;
+    return {
+      data: data,
+      error: null,
+    };
   } catch (error) {
     handleError(error, "Failed to fetch city - error");
     return { data: null, error: error };
@@ -287,7 +296,10 @@ export const getBarangay = async ({
       .eq("barangay_is_available", true)
       .eq("barangay_city_id", cityId);
     if (error) throw error;
-    return data;
+    return {
+      data: data,
+      error: null,
+    };
   } catch (error) {
     handleError(error, "Failed to fetch barangay - error");
     return { data: null, error: error };
