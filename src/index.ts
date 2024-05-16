@@ -1,4 +1,4 @@
-import { SupabaseClient, createClient } from "@supabase/supabase-js";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { CreateMayaCheckout } from "./types/maya";
 import {
   CreateTransactionRecord,
@@ -7,6 +7,7 @@ import {
   UpdateTransactionRecord,
 } from "./types/transaction";
 import { handleError } from "./utils/errorHandler";
+import { Database } from "./types/database";
 
 const getMayaApi = (isSandbox: boolean) => {
   let apiUrl = "";
@@ -187,7 +188,7 @@ export const createMayaCheckoutWithTransaction = async ({
 export const getRegion = async ({
   supabaseClient,
 }: {
-  supabaseClient: SupabaseClient;
+  supabaseClient: SupabaseClient<Database["address_schema"]>;
 }) => {
   try {
     const { data, error } = await supabaseClient
@@ -210,7 +211,7 @@ export const getProvince = async ({
   supabaseClient,
   regionId,
 }: {
-  supabaseClient: SupabaseClient;
+  supabaseClient: SupabaseClient<Database["address_schema"]>;
   regionId: string;
 }) => {
   try {
@@ -235,7 +236,7 @@ export const getCity = async ({
   supabaseClient,
   provinceId,
 }: {
-  supabaseClient: SupabaseClient;
+  supabaseClient: SupabaseClient<Database["address_schema"]>;
   provinceId: string;
 }) => {
   try {
@@ -260,7 +261,7 @@ export const getBarangay = async ({
   supabaseClient,
   cityId,
 }: {
-  supabaseClient: SupabaseClient;
+  supabaseClient: SupabaseClient<Database["address_schema"]>;
   cityId: string;
 }) => {
   try {
@@ -280,3 +281,5 @@ export const getBarangay = async ({
     return { data: null, error: error };
   }
 };
+
+export { Database } from "./types/database";
