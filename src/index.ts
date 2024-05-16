@@ -282,4 +282,4 @@ export const getBarangay = async ({
   }
 };
 
-export { Database } from "./types/database";
+export type { Database } from "./types/database";
