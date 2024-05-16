@@ -35,7 +35,7 @@ BEGIN
     END LOOP;
 END $$;
 
-CREATE TABLE public.app_source_table (
+CREATE TABLE app_source_table (
     app_source_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL ,
     app_source_name VARCHAR(4000) NOT NULL,
     app_source_date_created TIMESTAMPTZ DEFAULT NOW() NOT NULL
@@ -210,3 +210,24 @@ USING (true);
 
 INSERT INTO app_source_table(app_source_id, app_source_name) VALUES ('ba9e641e-d7fe-4d61-b9ee-85c919f457ca', 'Keep'), ('d513a2b5-c223-4f7b-a19f-165ad29655ec', 'Formsly'), ('5e42d2be-6789-4d46-8357-fc5a4e59631c', 'HR App');
 
+
+GRANT ALL ON ALL TABLES IN SCHEMA public TO PUBLIC;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO POSTGRES;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO public;
+
+GRANT USAGE ON SCHEMA address_schema TO anon, authenticated, service_role;
+GRANT ALL ON ALL TABLES IN SCHEMA address_schema TO anon, authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA address_schema TO anon, authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA address_schema TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA address_schema GRANT ALL ON TABLES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA address_schema GRANT ALL ON ROUTINES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA address_schema GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
+
+GRANT USAGE ON SCHEMA transaction_schema TO anon, authenticated, service_role;
+GRANT ALL ON ALL TABLES IN SCHEMA transaction_schema TO anon, authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA transaction_schema TO anon, authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA transaction_schema TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA transaction_schema GRANT ALL ON TABLES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA transaction_schema GRANT ALL ON ROUTINES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA transaction_schema GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
