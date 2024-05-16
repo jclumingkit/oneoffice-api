@@ -186,6 +186,49 @@ const {data, error} = await getAppSourceList({
 });
 ```
 
+**Fetch All Region**
+```
+import { getRegion } from "oneoffice-api";
+
+const { data, error } = await getRegion({
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
+});
+```
+
+**Fetch All Province Based On Region**
+```
+import { getProvince } from "oneoffice-api";
+
+const { data, error } = await getProvince({
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
+  regionId: "<regionId>"
+});
+```
+
+**Fetch All Cities Based On Province**
+```
+import { getCity } from "oneoffice-api";
+
+const { data, error } = await getCity({
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
+  provinceId: "<provinceId>"
+});
+```
+
+**Fetch All Barangay With Zip Code Based On City**
+```
+import { getBarangay } from "oneoffice-api";
+
+const { data, error } = await getBarangay({
+  supabaseUrl: "<yoursupabaseurl>",
+  supabaseAnonKey: "<yoursupabaseanonkey>",
+  cityId: "<cityId>"
+});
+```
+
 ## Typescript
 
 Typescript supported. Import types from `src/types`.
