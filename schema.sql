@@ -35,7 +35,7 @@ BEGIN
     END LOOP;
 END $$;
 
-CREATE TABLE public.app_source_table (
+CREATE TABLE app_source_table (
     app_source_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL ,
     app_source_name VARCHAR(4000) NOT NULL,
     app_source_date_created TIMESTAMPTZ DEFAULT NOW() NOT NULL

@@ -52,7 +52,9 @@ export const createTransactionRecord = async ({
   supabaseAnonKey,
 }: CreateTransactionRecord) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      db: { schema: "transaction_schema" },
+    });
     const { data, error } = await supabaseClient
       .from("transaction_table")
       .insert(transactionData)
@@ -72,7 +74,9 @@ export const updateTransactionRecord = async ({
   supabaseAnonKey,
 }: UpdateTransactionRecord) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      db: { schema: "transaction_schema" },
+    });
     const { data, error } = await supabaseClient
       .from("transaction_table")
       .update(transactionData)
@@ -95,7 +99,9 @@ export const getTransactionList = async ({
   supabaseAnonKey,
 }: GetTransactionList) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      db: { schema: "transaction_schema" },
+    });
     let query = supabaseClient
       .from("transaction_table")
       .select("*", { count: "exact" });
@@ -205,7 +211,9 @@ export const getRegion = async ({
   supabaseAnonKey: string;
 }) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      db: { schema: "address_schema" },
+    });
     const { data, error } = await supabaseClient
       .from("region_table")
       .select("region_id, region")
@@ -232,7 +240,9 @@ export const getProvince = async ({
   regionId: string;
 }) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      db: { schema: "address_schema" },
+    });
     const { data, error } = await supabaseClient
       .from("province_table")
       .select("province_id, province")
@@ -260,7 +270,9 @@ export const getCity = async ({
   provinceId: string;
 }) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      db: { schema: "address_schema" },
+    });
     const { data, error } = await supabaseClient
       .from("city_table")
       .select("city_id, city")
@@ -288,7 +300,9 @@ export const getBarangay = async ({
   cityId: string;
 }) => {
   try {
-    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      db: { schema: "address_schema" },
+    });
     const { data, error } = await supabaseClient
       .from("barangay_table")
       .select("barangay_id, barangay, barangay_zip_code")
