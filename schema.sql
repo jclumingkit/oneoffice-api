@@ -94,6 +94,7 @@ CREATE TABLE transaction_schema.transaction_table (
     transaction_total_amount BIGINT NOT NULL,
     transaction_status VARCHAR(20) DEFAULT 'PENDING_PAYMENT' NOT NULL,
     transaction_app_source_user_id UUID NOT NULL,
+    transaction_service_id UUID NOT NULL,
     transaction_app_source UUID REFERENCES app_source_table(app_source_id) NOT NULL
 );
 
