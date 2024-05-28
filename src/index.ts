@@ -175,7 +175,10 @@ export const createMayaCheckoutWithTransaction = async ({
       supabaseClient,
       transactionData,
     });
-    window.location.href = mayaCheckout.data.redirectUrl;
+    return {
+      data: mayaCheckout.data.redirectUrl,
+      error: null,
+    };
   } catch (error) {
     handleError(
       error,
