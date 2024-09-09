@@ -9,7 +9,7 @@ export type CreateMayaCheckout = {
         redirectUrl?: RedirectUrls;
         requestReferenceNumber: string;
         metadata: {};
-        transaction: {};
+        transaction?: {};
     }
     isSandbox?: boolean;
 }
