@@ -20,7 +20,7 @@ type TotalAmount = {
     details?: Details;
 }
 
-type Buyer = {
+export type Buyer = {
     firstName?: string;
     middleName?: string;
     lastName?: string;
@@ -84,4 +84,11 @@ type RedirectUrls = {
     success?: string;
     failure?: string;
     cancel?: string;
+}
+
+export type Card = {
+    expMonth: string,
+    number: string,
+    expYear: string,
+    cvc: string
 }

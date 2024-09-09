@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { CreateMayaCheckout } from "./types/maya";
+import { Buyer, Card, CreateMayaCheckout } from "./types/maya";
 import {
   CreateTransactionRecord,
   GetTransactionList,
@@ -8,6 +8,7 @@ import {
 } from "./types/transaction";
 import { handleError } from "./utils/errorHandler";
 import { Database } from "./types/database";
+import { CustomerCardTableInsert, CustomerTableInsert, PaymentTokenTableInsert } from "./types/payment";
 
 const getMayaApi = (isSandbox: boolean) => {
   let apiUrl = "";
@@ -281,6 +282,203 @@ export const getBarangay = async ({
     };
   } catch (error) {
     handleError(error, "Failed to fetch barangay - error");
+    return { data: null, error: error };
+  }
+};
+
+export const createMayaCustomer = async ({
+  buyer,
+  secretKey,
+  isSandbox = true
+}: {buyer: Buyer, secretKey: string; isSandbox?: boolean}) => {
+  try {
+    const mayaApiUrl = getMayaApi(isSandbox);
+    const response = await fetch(`${mayaApiUrl}/payments/v1/customers`, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${secretKey}:`).toString(
+          "base64"
+        )}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(buyer),
+    });
+
+    const responseData = await response.json();
+
+    return { data: responseData, error: null };
+  } catch (error) {
+    handleError(error, "Failed to create customer - error");
+    return { data: null, error: error };
+  }
+};
+
+export const createMayaPaymentToken = async ({
+  card,
+  publicKey,
+  isSandbox = true
+}: {card: Card, publicKey: string; isSandbox?: boolean}) => {
+  try {
+    const mayaApiUrl = getMayaApi(isSandbox);
+    const response = await fetch(`${mayaApiUrl}/payments/v1/payment-tokens`, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${publicKey}:`).toString(
+          "base64"
+        )}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({card}),
+    });
+
+    const responseData = await response.json();
+
+    return { data: responseData, error: null };
+  } catch (error) {
+    handleError(error, "Failed to create payment token - error");
+    return { data: null, error: error };
+  }
+};
+
+export const createMayaCustomerCard = async ({
+  customerId,
+  paymentTokenId,
+  isDefault,
+  secretKey,
+  isSandbox = true
+}: {customerId: string; paymentTokenId: string, isDefault: boolean, secretKey: string; isSandbox?: boolean}) => {
+  try {
+    const mayaApiUrl = getMayaApi(isSandbox);
+    const response = await fetch(`${mayaApiUrl}/payments/v1/customers/${customerId}/cards`, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${secretKey}:`).toString(
+          "base64"
+        )}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({paymentTokenId, isDefault}),
+    });
+
+    const responseData = await response.json();
+
+    return { data: responseData, error: null };
+  } catch (error) {
+    handleError(error, "Failed to create customer card - error");
+    return { data: null, error: error };
+  }
+};
+
+export const createMayaCustomerPayment = async ({
+  customerId,
+  cardToken,
+  paymentDetails,
+  secretKey,
+  isSandbox = true
+}: {
+  customerId: string; 
+  cardToken: string; 
+  paymentDetails: {
+    totalAmount: {
+      amount: number;
+      currency: "PHP"
+    };
+    requestReferenceNumber: string;
+    paymentTokenId: string;
+    metadata: {
+      teamId: string;
+      transactionId: string;
+      newExpiryDate: string;
+      numberOfMonths: number;
+      price: number;
+      token: string;
+      transactionServiceName: string;
+    },
+    redirectUrl?: {
+      success: string,
+      failure: string,
+      cancel: string,
+    },
+  },
+  secretKey: string; 
+  isSandbox?: boolean;
+}) => {
+  try {
+    const mayaApiUrl = getMayaApi(isSandbox);
+    const response = await fetch(`${mayaApiUrl}/payments/v1/customers/${customerId}/cards/${cardToken}/payments`, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${secretKey}:`).toString(
+          "base64"
+        )}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(paymentDetails),
+    });
+
+    const responseData = await response.json();
+
+    return { data: responseData, error: null };
+  } catch (error) {
+    handleError(error, "Failed to create customer card - error");
+    return { data: null, error: error };
+  }
+};
+
+export const createPaymentCustomer = async ({
+  supabaseClient,
+  customer,
+}: {supabaseClient: SupabaseClient<Database>, customer: CustomerTableInsert}) => {
+  try {
+    const { data, error } = await supabaseClient.schema("payment_schema")
+      .from("customer_table")
+      .insert(customer)
+      .select("*")
+      .maybeSingle();
+    if (error) throw error;
+    return { data: data, error: null };
+  } catch (error) {
+    handleError(error, "Failed to create customer - error");
+    return { data: null, error: error };
+  }
+};
+
+export const createPaymentCustomerCard = async ({
+  supabaseClient,
+  card,
+}: {supabaseClient: SupabaseClient<Database>, card: CustomerCardTableInsert}) => {
+  try {
+    const { data, error } = await supabaseClient.schema("payment_schema")
+      .from("customer_card_table")
+      .insert(card)
+      .select("*")
+      .maybeSingle();
+    if (error) throw error;
+    return { data: data, error: null };
+  } catch (error) {
+    handleError(error, "Failed to create customer card - error");
+    return { data: null, error: error };
+  }
+};
+
+export const createPaymentToken = async ({
+  supabaseClient,
+  paymentToken,
+}: {supabaseClient: SupabaseClient<Database>, paymentToken: PaymentTokenTableInsert}) => {
+  try {
+    const { data, error } = await supabaseClient.schema("payment_schema")
+      .from("payment_token_table")
+      .insert(paymentToken)
+      .select("*")
+      .maybeSingle();
+    if (error) throw error;
+    return { data: data, error: null };
+  } catch (error) {
+    handleError(error, "Failed to create customer payment token - error");
     return { data: null, error: error };
   }
 };
