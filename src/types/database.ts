@@ -147,60 +147,85 @@ export type Database = {
     Tables: {
       customer_card_table: {
         Row: {
+          customer_card_customer_id: string
           customer_card_id: string
           customer_card_provider_id: string
           customer_card_provider_name: string
           customer_card_token: string
         }
         Insert: {
+          customer_card_customer_id: string
           customer_card_id?: string
           customer_card_provider_id: string
           customer_card_provider_name: string
           customer_card_token: string
         }
         Update: {
+          customer_card_customer_id?: string
           customer_card_id?: string
           customer_card_provider_id?: string
           customer_card_provider_name?: string
           customer_card_token?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "customer_card_table_customer_card_customer_id_fkey"
+            columns: ["customer_card_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_table"
+            referencedColumns: ["customer_id"]
+          },
+        ]
       }
       customer_table: {
         Row: {
           customer_id: string
           customer_provider_id: string
           customer_provider_name: string
+          customer_user_id: string
         }
         Insert: {
           customer_id?: string
           customer_provider_id: string
           customer_provider_name: string
+          customer_user_id: string
         }
         Update: {
           customer_id?: string
           customer_provider_id?: string
           customer_provider_name?: string
+          customer_user_id?: string
         }
         Relationships: []
       }
       payment_token_table: {
         Row: {
+          payment_token_customer_id: string
           payment_token_id: string
           payment_token_provider_name: string
           payment_token_value: string
         }
         Insert: {
+          payment_token_customer_id: string
           payment_token_id?: string
           payment_token_provider_name: string
           payment_token_value: string
         }
         Update: {
+          payment_token_customer_id?: string
           payment_token_id?: string
           payment_token_provider_name?: string
           payment_token_value?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "payment_token_table_payment_token_customer_id_fkey"
+            columns: ["payment_token_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_table"
+            referencedColumns: ["customer_id"]
+          },
+        ]
       }
     }
     Views: {
