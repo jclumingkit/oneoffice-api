@@ -143,7 +143,7 @@ export type Database = {
       [_ in never]: never
     }
   }
-  payment_schema: {
+  customer_schema: {
     Tables: {
       customer_card_table: {
         Row: {

@@ -8,7 +8,7 @@ import {
 } from "./types/transaction";
 import { handleError } from "./utils/errorHandler";
 import { Database } from "./types/database";
-import { CustomerCardTableInsert, CustomerTableInsert, GetInvoiceList } from "./types/payment";
+import { CustomerCardTableInsert, CustomerTableInsert, GetInvoice } from "./types/customer";
 
 const getMayaApi = (isSandbox: boolean) => {
   let apiUrl = "";
@@ -434,7 +434,7 @@ export const createPaymentCustomer = async ({
   customer,
 }: {supabaseClient: SupabaseClient<Database>, customer: CustomerTableInsert}) => {
   try {
-    const { data, error } = await supabaseClient.schema("payment_schema")
+    const { data, error } = await supabaseClient.schema("customer_schema")
       .from("customer_table")
       .insert(customer)
       .select("*")
@@ -452,7 +452,7 @@ export const createPaymentCustomerCard = async ({
   card,
 }: {supabaseClient: SupabaseClient<Database>, card: CustomerCardTableInsert}) => {
   try {
-    const { data, error } = await supabaseClient.schema("payment_schema")
+    const { data, error } = await supabaseClient.schema("customer_schema")
       .from("customer_card_table")
       .insert(card)
       .select("*")
@@ -471,7 +471,7 @@ export const getInvoice = async ({
   userId,
   isSandbox,
   secretKey
-}: GetInvoiceList) => {
+}: GetInvoice) => {
   try {
     const { data, error } = await supabaseClient
       .schema("transaction_schema")
@@ -482,7 +482,7 @@ export const getInvoice = async ({
 
     // fetch customer
     const {data: customerData, error: customerError} = await supabaseClient
-      .schema("payment_schema")
+      .schema("customer_schema")
       .from("customer_table")
       .select("customer_provider_id, customer_id")
       .eq("customer_user_id", userId)
@@ -504,13 +504,13 @@ export const getInvoice = async ({
     
     // fetch customer card
     const {data: customerCardData, error: customerCardError} = await supabaseClient
-      .schema("payment_schema")
+      .schema("customer_schema")
       .from("customer_card_table")
       .select("customer_card_token")
       .eq("customer_card_customer_id", customerData[0].customer_id)
       .limit(1);
     if (customerCardError) throw customerCardError;
-    
+
     const cardToken = customerCardData[0].customer_card_token;
     const customerCardResponse = await fetch(`${mayaApiUrl}/payments/v1/customers/${customerProviderId}/cards/${cardToken}`, {
       method: "GET",
