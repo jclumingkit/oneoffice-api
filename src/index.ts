@@ -8,7 +8,7 @@ import {
 } from "./types/transaction";
 import { handleError } from "./utils/errorHandler";
 import { Database } from "./types/database";
-import { CustomerCardTableInsert, CustomerTableInsert, PaymentTokenTableInsert } from "./types/payment";
+import { CustomerCardTableInsert, CustomerTableInsert, GetInvoiceList } from "./types/payment";
 
 const getMayaApi = (isSandbox: boolean) => {
   let apiUrl = "";
@@ -465,21 +465,72 @@ export const createPaymentCustomerCard = async ({
   }
 };
 
-export const createPaymentToken = async ({
+export const getInvoice = async ({
   supabaseClient,
-  paymentToken,
-}: {supabaseClient: SupabaseClient<Database>, paymentToken: PaymentTokenTableInsert}) => {
+  transactionId,
+  userId,
+  isSandbox,
+  secretKey
+}: GetInvoiceList) => {
   try {
-    const { data, error } = await supabaseClient.schema("payment_schema")
-      .from("payment_token_table")
-      .insert(paymentToken)
+    const { data, error } = await supabaseClient
+      .schema("transaction_schema")
+      .from("transaction_table")
       .select("*")
-      .maybeSingle();
+      .eq("transaction_id", transactionId);
     if (error) throw error;
-    return { data: data, error: null };
+
+    // fetch customer
+    const {data: customerData, error: customerError} = await supabaseClient
+      .schema("payment_schema")
+      .from("customer_table")
+      .select("customer_provider_id, customer_id")
+      .eq("customer_user_id", userId)
+      .limit(1);
+    if (customerError) throw customerError;
+
+    const customerProviderId = customerData[0].customer_provider_id;
+    const mayaApiUrl = getMayaApi(isSandbox);
+    const customerResponse = await fetch(`${mayaApiUrl}/payments/v1/customers/${customerProviderId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${secretKey}:`).toString(
+          "base64"
+        )}`,
+        Accept: "application/json",
+      },
+    });
+    const customerResponseData = await customerResponse.json();
+    
+    // fetch customer card
+    const {data: customerCardData, error: customerCardError} = await supabaseClient
+      .schema("payment_schema")
+      .from("customer_card_table")
+      .select("customer_card_token")
+      .eq("customer_card_customer_id", customerData[0].customer_id)
+      .limit(1);
+    if (customerCardError) throw customerCardError;
+    
+    const cardToken = customerCardData[0].customer_card_token;
+    const customerCardResponse = await fetch(`${mayaApiUrl}/payments/v1/customers/${customerProviderId}/cards/${cardToken}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${secretKey}:`).toString(
+          "base64"
+        )}`,
+        Accept: "application/json",
+      },
+    });
+    const customerCardResponseData = await customerCardResponse.json();
+    
+    return { data: {
+      transactionData: data[0],
+      customerData: customerResponseData,
+      customerCardData: customerCardResponseData
+    }, error: null };
   } catch (error) {
-    handleError(error, "Failed to create customer payment token - error");
-    return { data: null, error: error };
+    handleError(error, "Failed to fetch invoice data");
+    return { data: null, count: null, error: error };
   }
 };
 

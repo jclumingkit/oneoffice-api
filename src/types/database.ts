@@ -198,35 +198,6 @@ export type Database = {
         }
         Relationships: []
       }
-      payment_token_table: {
-        Row: {
-          payment_token_customer_id: string
-          payment_token_id: string
-          payment_token_provider_name: string
-          payment_token_value: string
-        }
-        Insert: {
-          payment_token_customer_id: string
-          payment_token_id?: string
-          payment_token_provider_name: string
-          payment_token_value: string
-        }
-        Update: {
-          payment_token_customer_id?: string
-          payment_token_id?: string
-          payment_token_provider_name?: string
-          payment_token_value?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "payment_token_table_payment_token_customer_id_fkey"
-            columns: ["payment_token_customer_id"]
-            isOneToOne: false
-            referencedRelation: "customer_table"
-            referencedColumns: ["customer_id"]
-          },
-        ]
-      }
     }
     Views: {
       [_ in never]: never
