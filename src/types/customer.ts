@@ -18,7 +18,7 @@ export type GetInvoice = {
 };
 
 export type GetCustomer = {
-    supabaseClient: SupabaseClient<Database>;
+    supabaseClient: SupabaseClient<Database["customer_schema"]>;
     userId: string;
     isSandbox: boolean;
     secretKey: string;

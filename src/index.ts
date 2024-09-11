@@ -8,7 +8,7 @@ import {
 } from "./types/transaction";
 import { handleError } from "./utils/errorHandler";
 import { Database } from "./types/database";
-import { CustomerCardTableInsert, CustomerTableInsert, GetInvoice } from "./types/customer";
+import { CustomerCardTableInsert, CustomerTableInsert, GetCustomer, GetInvoice } from "./types/customer";
 
 const getMayaApi = (isSandbox: boolean) => {
   let apiUrl = "";
@@ -522,11 +522,10 @@ export const getCustomer = async ({
   userId,
   isSandbox,
   secretKey
-}: GetInvoice) => {
+}: GetCustomer) => {
   try {
     // fetch customer
     const {data: customerData, error: customerError} = await supabaseClient
-      .schema("customer_schema")
       .from("customer_table")
       .select("customer_provider_id, customer_id")
       .eq("customer_user_id", userId)
@@ -548,7 +547,6 @@ export const getCustomer = async ({
 
     // fetch customer card
     const {data: customerCardData, error: customerCardError} = await supabaseClient
-      .schema("customer_schema")
       .from("customer_card_table")
       .select("customer_card_token")
       .eq("customer_card_customer_id", customerData[0].customer_id)
