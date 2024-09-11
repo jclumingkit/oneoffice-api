@@ -517,4 +517,65 @@ export const getInvoice = async ({
   }
 };
 
+export const getCustomer = async ({
+  supabaseClient,
+  userId,
+  isSandbox,
+  secretKey
+}: GetInvoice) => {
+  try {
+    // fetch customer
+    const {data: customerData, error: customerError} = await supabaseClient
+      .schema("customer_schema")
+      .from("customer_table")
+      .select("customer_provider_id, customer_id")
+      .eq("customer_user_id", userId)
+      .limit(1);
+    if (customerError) throw customerError;
+
+    const customerProviderId = customerData[0].customer_provider_id;
+    const mayaApiUrl = getMayaApi(isSandbox);
+    const mayaCustomerResponse = await fetch(`${mayaApiUrl}/payments/v1/customers/${customerProviderId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${secretKey}:`).toString(
+          "base64"
+        )}`,
+        Accept: "application/json",
+      },
+    });
+    const mayaCustomerResponseData = await mayaCustomerResponse.json();
+
+    // fetch customer card
+    const {data: customerCardData, error: customerCardError} = await supabaseClient
+      .schema("customer_schema")
+      .from("customer_card_table")
+      .select("customer_card_token")
+      .eq("customer_card_customer_id", customerData[0].customer_id)
+      .limit(1);
+    if (customerCardError) throw customerCardError;
+
+    let mayaCustomerCardResponseData = null;
+
+    if (customerCardData[0]) {
+      const cardToken = customerCardData[0].customer_card_token;
+      const customerCardResponse = await fetch(`${mayaApiUrl}/payments/v1/customers/${customerProviderId}/cards/${cardToken}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Basic ${Buffer.from(`${secretKey}:`).toString(
+            "base64"
+          )}`,
+          Accept: "application/json",
+        },
+      });
+      mayaCustomerCardResponseData = await customerCardResponse.json();
+    }
+    
+    return { customerData: mayaCustomerResponseData, customerCardData: mayaCustomerCardResponseData, error: null };
+  } catch (error) {
+    handleError(error, "Failed to fetch customer data");
+    return { data: null, count: null, error: error };
+  }
+};
+
 export type { Database } from "./types/database";

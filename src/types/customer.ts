@@ -16,3 +16,10 @@ export type GetInvoice = {
     secretKey: string;
     referenceNumber: string;
 };
+
+export type GetCustomer = {
+    supabaseClient: SupabaseClient<Database>;
+    userId: string;
+    isSandbox: boolean;
+    secretKey: string;
+};
