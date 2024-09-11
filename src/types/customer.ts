@@ -11,8 +11,8 @@ export type CustomerCardTableUpdate =  Database["customer_schema"]["Tables"]["cu
 
 export type GetInvoice = {
     supabaseClient: SupabaseClient<Database>;
-    transactionId: string;
     userId: string;
     isSandbox: boolean;
     secretKey: string;
+    referenceNumber: string;
 };

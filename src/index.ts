@@ -467,19 +467,12 @@ export const createPaymentCustomerCard = async ({
 
 export const getInvoice = async ({
   supabaseClient,
-  transactionId,
+  referenceNumber,
   userId,
   isSandbox,
   secretKey
 }: GetInvoice) => {
   try {
-    const { data, error } = await supabaseClient
-      .schema("transaction_schema")
-      .from("transaction_table")
-      .select("*")
-      .eq("transaction_id", transactionId);
-    if (error) throw error;
-
     // fetch customer
     const {data: customerData, error: customerError} = await supabaseClient
       .schema("customer_schema")
@@ -491,7 +484,7 @@ export const getInvoice = async ({
 
     const customerProviderId = customerData[0].customer_provider_id;
     const mayaApiUrl = getMayaApi(isSandbox);
-    const customerResponse = await fetch(`${mayaApiUrl}/payments/v1/customers/${customerProviderId}`, {
+    const mayaCustomerResponse = await fetch(`${mayaApiUrl}/payments/v1/customers/${customerProviderId}`, {
       method: "GET",
       headers: {
         Authorization: `Basic ${Buffer.from(`${secretKey}:`).toString(
@@ -500,19 +493,10 @@ export const getInvoice = async ({
         Accept: "application/json",
       },
     });
-    const customerResponseData = await customerResponse.json();
+    const mayaCustomerResponseData = await mayaCustomerResponse.json();
     
-    // fetch customer card
-    const {data: customerCardData, error: customerCardError} = await supabaseClient
-      .schema("customer_schema")
-      .from("customer_card_table")
-      .select("customer_card_token")
-      .eq("customer_card_customer_id", customerData[0].customer_id)
-      .limit(1);
-    if (customerCardError) throw customerCardError;
-
-    const cardToken = customerCardData[0].customer_card_token;
-    const customerCardResponse = await fetch(`${mayaApiUrl}/payments/v1/customers/${customerProviderId}/cards/${cardToken}`, {
+    // fetch payment
+    const paymentResponse = await fetch(`${mayaApiUrl}/payments/v1/payment-rrns/${referenceNumber}`, {
       method: "GET",
       headers: {
         Authorization: `Basic ${Buffer.from(`${secretKey}:`).toString(
@@ -521,12 +505,11 @@ export const getInvoice = async ({
         Accept: "application/json",
       },
     });
-    const customerCardResponseData = await customerCardResponse.json();
+    const paymentData = await paymentResponse.json();
     
     return { data: {
-      transactionData: data[0],
-      customerData: customerResponseData,
-      customerCardData: customerCardResponseData
+      customerData: mayaCustomerResponseData,
+      paymentData: paymentData[0]
     }, error: null };
   } catch (error) {
     handleError(error, "Failed to fetch invoice data");
